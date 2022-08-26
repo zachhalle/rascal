@@ -29,6 +29,7 @@ rule token =
   | float      { FLOAT (float_of_string (lexeme lexbuf)) }
   | "true"     { TRUE }
   | "false"    { FALSE }
+  | "define"   { DEFINE }
   | "lambda"   { LAMBDA }
   | identifier { IDENTIFIER (lexeme lexbuf) }
   | '"'        { read_string (Buffer.create 10) lexbuf }

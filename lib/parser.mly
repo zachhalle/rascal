@@ -1,23 +1,31 @@
 %{
-open Expr      
+open Ast      
 %}
 
 %token <int> INT
 %token <float> FLOAT
 %token <string> IDENTIFIER
 %token <string> STRING
+%token DEFINE
 %token LAMBDA
 %token TRUE
 %token FALSE
 %token LPAREN
 %token RPAREN
 %token EOF
-%start <expr option> program
+%start <stmt list> program
 %%
 
 program:
-  | e = expr { Some e }
-  | EOF      { None   } ;
+  | ss = list(stmt); EOF { ss }
+
+stmt:
+  | LPAREN ;
+    DEFINE ;
+    v = IDENTIFIER ;
+    e = expr ;
+    RPAREN           { Define (v, e) }
+  | e = expr         { Expr e }
 
 expr:
   | i = INT           { Int i } 
