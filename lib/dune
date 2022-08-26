@@ -1,2 +1,9 @@
+(menhir
+ (modules parser))
+
+(ocamllex 
+ (modules lexer))
+
 (library
- (name rascal))
+ (name rascal)
+ (modules lexer parser))

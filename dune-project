@@ -7,13 +7,13 @@
 (source
  (github username/reponame))
 
-(authors "Author Name")
+(authors "Zach Halle")
 
-(maintainers "Maintainer Name")
+(maintainers "Zach Halle")
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
+(using menhir 2.1)
 
 (package
  (name rascal)
