@@ -27,7 +27,12 @@ expr:
   | TRUE              { Bool true }
   | FALSE             { Bool false }
   | LPAREN ;
+    LAMBDA ;
+    v = IDENTIFIER ;
+    e = expr ;
+    RPAREN            { Lambda (v, e) }
+  | LPAREN ;
     es = list(expr) ; 
-    RPAREN            { Apply es }
+    RPAREN            { List es }
 
 %%
