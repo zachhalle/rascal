@@ -14,6 +14,10 @@ open Ast
 %token RPAREN
 %token EOF
 %start <stmt list> program
+%type <stmt> stmt
+%type <stmt list> list(stmt) 
+%type <expr> expr
+%type <expr list> list(expr)
 %%
 
 program:
