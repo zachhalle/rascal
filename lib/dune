@@ -6,4 +6,4 @@
 
 (library
  (name rascal)
- (modules lexer parser ast))
+ (modules lexer parser parse ast))
