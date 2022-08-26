@@ -27,10 +27,11 @@ rule token =
   | newline    { new_line lexbuf; token lexbuf }
   | int        { INT (int_of_string (lexeme lexbuf)) } 
   | float      { FLOAT (float_of_string (lexeme lexbuf)) }
+  | "true"     { TRUE }
+  | "false"    { FALSE }
+  | "lambda"   { LAMBDA }
   | identifier { IDENTIFIER (lexeme lexbuf) }
   | '"'        { read_string (Buffer.create 10) lexbuf }
-  | "#t"       { TRUE }
-  | "#f"       { FALSE }
   | '('        { LPAREN }
   | ')'        { RPAREN }
   | _          { raise (SyntaxError ("Unexpected character: " ^ lexeme lexbuf)) }
