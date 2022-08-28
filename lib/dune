@@ -6,4 +6,6 @@
 
 (library
  (name rascal)
- (modules lexer parser parse ast))
+ (modules lexer parser parse ast)
+ (libraries pprint))
+
