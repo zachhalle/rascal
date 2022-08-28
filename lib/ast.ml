@@ -4,6 +4,7 @@ type expr =
   | String of string
   | Bool of bool
   | Var of string
+  | Quote of expr
   | Lambda of string * expr
   | List of expr list
 
@@ -19,6 +20,7 @@ let rec pprint_expr e =
   | String s -> enclose (char '\"') (char '\"') (string s)
   | Bool b -> string (string_of_bool b)
   | Var v -> string v
+  | Quote e -> char '\'' ^^ pprint_expr e
   | Lambda (v, e) -> flow (break 1) [string "(lambda"; string v; pprint_expr e] ^^ string ")"
   | List es -> enclose lparen rparen (flow_map (break 1) pprint_expr es)
 

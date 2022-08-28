@@ -27,6 +27,7 @@ rule token =
   | newline    { new_line lexbuf; token lexbuf }
   | int        { INT (int_of_string (lexeme lexbuf)) } 
   | float      { FLOAT (float_of_string (lexeme lexbuf)) }
+  | "'"        { QUOTE }
   | "true"     { TRUE }
   | "false"    { FALSE }
   | "define"   { DEFINE }

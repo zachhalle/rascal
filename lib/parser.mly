@@ -12,6 +12,7 @@ open Ast
 %token FALSE
 %token LPAREN
 %token RPAREN
+%token QUOTE
 %token EOF
 %start <stmt list> program
 %type <stmt> stmt
@@ -36,6 +37,7 @@ expr:
   | f = FLOAT         { Float f }
   | x = IDENTIFIER    { Var x }
   | s = STRING        { String s }
+  | QUOTE ; e = expr  { Quote e }
   | TRUE              { Bool true }
   | FALSE             { Bool false }
   | LPAREN ;

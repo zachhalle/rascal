@@ -4,6 +4,7 @@ type expr =
   | String of string
   | Bool of bool
   | Var of string
+  | Quote of expr
   | Lambda of string * expr
   | List of expr list
 
