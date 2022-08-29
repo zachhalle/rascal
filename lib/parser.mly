@@ -42,9 +42,11 @@ expr:
   | FALSE             { Bool false }
   | LPAREN ;
     LAMBDA ;
-    v = IDENTIFIER ;
+    LPAREN ;
+    vs = list(IDENTIFIER) ;
+    RPAREN ;
     e = expr ;
-    RPAREN            { Lambda (v, e) }
+    RPAREN            { Lambda (vs, e) }
   | LPAREN ;
     es = list(expr) ; 
     RPAREN            { List es }

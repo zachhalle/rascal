@@ -5,7 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Quote of expr
-  | Lambda of string * expr
+  | Lambda of string list * expr
   | List of expr list
 
 type stmt =

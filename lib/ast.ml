@@ -5,7 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Quote of expr
-  | Lambda of string * expr
+  | Lambda of string list * expr
   | List of expr list
 
 type stmt =
@@ -21,7 +21,7 @@ let rec pprint_expr e =
   | Bool b -> string (string_of_bool b)
   | Var v -> string v
   | Quote e -> char '\'' ^^ pprint_expr e
-  | Lambda (v, e) -> flow (break 1) [string "(lambda"; string v; pprint_expr e] ^^ string ")"
+  | Lambda (vs, e) -> flow (break 1) [string "(lambda"; flow_map (break 1) string vs; pprint_expr e] ^^ string ")"
   | List es -> enclose lparen rparen (flow_map (break 1) pprint_expr es)
 
 let pprint_stmt s =
