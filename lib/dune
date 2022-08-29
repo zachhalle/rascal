@@ -6,6 +6,13 @@
 
 (library
  (name rascal)
- (modules lexer parser parse ast eval context)
+ (modules
+   ast
+   context
+   eval
+   lexer
+   parse 
+   parser
+   primitive)
  (libraries pprint))
 
