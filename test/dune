@@ -1,5 +1,13 @@
 (library
  (name parse)
+ (modules parse)
+ (inline_tests)
+ (preprocess (pps ppx_expect))
+ (libraries rascal))
+
+(library
+ (name context)
+ (modules context)
  (inline_tests)
  (preprocess (pps ppx_expect))
  (libraries rascal))
