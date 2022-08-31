@@ -10,18 +10,24 @@ exception Runtime_error of string
 let [@warning "-8"] primitives : primitives =
   let add_all entries = List.fold_left (fun d (k, v) -> add k v d) empty entries in
   add_all [
-    "+", (fun [Int x; Int y] -> Int (x + y));
-    "-", (fun [Int x; Int y] -> Int (x - y));
-    "*", (fun [Int x; Int y] -> Int (x * y));
-    "/", (fun [Int x; Int y] -> Int (x / y));
+    "+", List.fold_left (fun (Int x) (Int y) -> Int (x + y)) (Int 0);
+    "-", (fun xs -> 
+            match xs with 
+            | [] -> Int 0 
+            | x :: xs' -> List.fold_left (fun (Int x) (Int y) -> Int (x - y)) x xs');
+    "*", List.fold_left (fun (Int x) (Int y) -> Int (x * y)) (Int 1);
+    "/", (fun xs ->
+            match xs with
+            | [] -> Int 1
+            | x :: xs' -> List.fold_left (fun (Int x) (Int y) -> (Int (x / y))) x xs');
     "%", (fun [Int x; Int y] -> Int (x mod y));
     "<", (fun [Int x; Int y] -> Bool (x < y));
     ">", (fun [Int x; Int y] -> Bool (x > y));
     "<=", (fun [Int x; Int y] -> Bool (x <= y));
     ">=", (fun [Int x; Int y] -> Bool (x >= y));
-    "&&", (fun [Bool a; Bool b] -> Bool (a && b));
-    "||", (fun [Bool a; Bool b] -> Bool (a || b));
-    "^^", (fun [String s; String t] -> String (s ^ t));
+    "&&", List.fold_left (fun (Bool x) (Bool y) -> Bool (x && y)) (Bool true);
+    "||", List.fold_left (fun (Bool x) (Bool y) -> Bool (x || y)) (Bool false);
+    "^^", List.fold_left (fun (String s) (String t) -> String (s ^ t)) (String "");
     "cons", (fun [e; Quote (List es)] -> Quote (List (e :: es)));
     "car", (fun [Quote (List (e :: _))] -> e);
     "cdr", (fun [Quote (List (_ :: es))] -> Quote (List es))
