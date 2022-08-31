@@ -1,2 +1,5 @@
-(test
- (name rascal))
+(library
+ (name test_parse)
+ (inline_tests)
+ (preprocess (pps ppx_expect))
+ (libraries rascal))
