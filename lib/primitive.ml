@@ -35,7 +35,7 @@ let [@warning "-8"] primitives : primitives =
 
 let primitive_bindings =
   let bindings = ref [] in
-  iter (fun prim _ -> bindings := (prim, Prim prim) :: !bindings) primitives;
+  iter (fun prim _ -> bindings := (prim, Primitive prim) :: !bindings) primitives;
   !bindings
 
 let apply_primitive e es =
@@ -43,7 +43,7 @@ let apply_primitive e es =
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Lambda _
   | List _ | Var _ -> None
-  | Prim v -> 
+  | Primitive v -> 
     match find_opt v primitives with
     | None -> None
     | Some primitive -> 

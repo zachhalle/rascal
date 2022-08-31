@@ -4,7 +4,7 @@ type expr =
   | String of string
   | Bool of bool
   | Var of string
-  | Prim of string
+  | Primitive of string
   | Quote of expr
   | Lambda of string list * expr
   | List of expr list
@@ -21,7 +21,7 @@ let rec pprint_expr e =
   | String s -> enclose (char '\"') (char '\"') (string s)
   | Bool b -> string (string_of_bool b)
   | Var v -> string v
-  | Prim v -> string v
+  | Primitive v -> string v
   | Quote e -> char '\'' ^^ pprint_expr e
   | Lambda (vs, e) -> 
     flow (break 1) [
