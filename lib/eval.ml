@@ -9,7 +9,7 @@ let is_value e =
   match e with
   | Int _ | Float _ | String _
   | Bool _ | Var _ | Quote _
-  | Lambda _ -> true
+  | Lambda _ | Prim _ -> true
   | List _ -> false
 
 let bind_all context vs es =
@@ -18,7 +18,8 @@ let bind_all context vs es =
 let rec eval context e =
   match e with
   | Int _ | Float _ | String _
-  | Bool _ | Quote _ | Lambda _ -> e
+  | Bool _ | Quote _ | Lambda _ 
+  | Prim _ -> e
   | Var v -> substitute context v
   | List [] -> raise (Runtime_error "Illegal application: empty")
   | List es -> apply context (List.map (eval context) es)
@@ -31,6 +32,7 @@ and apply context es =
     | Some e' -> e'
     | None ->
       match e with
+      | Prim _ -> assert false
       | Int _ | Float _ | String _
       | Bool _ | Quote _ | List _ ->
         raise (

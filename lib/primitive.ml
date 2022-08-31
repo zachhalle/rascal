@@ -33,12 +33,17 @@ let [@warning "-8"] primitives : primitives =
     "cdr", (fun [Quote (List (_ :: es))] -> Quote (List es))
   ]
 
+let primitive_bindings =
+  let bindings = ref [] in
+  iter (fun prim _ -> bindings := (prim, Prim prim) :: !bindings) primitives;
+  !bindings
+
 let apply_primitive e es =
   match e with
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Lambda _
-  | List _ -> None
-  | Var v -> 
+  | List _ | Var _ -> None
+  | Prim v -> 
     match find_opt v primitives with
     | None -> None
     | Some primitive -> 

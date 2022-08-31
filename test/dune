@@ -11,3 +11,10 @@
  (inline_tests)
  (preprocess (pps ppx_expect))
  (libraries rascal))
+
+(library
+ (name eval)
+ (modules eval)
+ (inline_tests)
+ (preprocess (pps ppx_expect))
+ (libraries rascal))
