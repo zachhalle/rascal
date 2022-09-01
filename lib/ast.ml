@@ -5,6 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Primitive of string
+  | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr
   | List of expr list
@@ -23,6 +24,13 @@ let rec pprint_expr e =
   | Var v -> string v
   | Primitive v -> string v
   | Quote e -> char '\'' ^^ pprint_expr e
+  | If (e1, e2, e3) ->
+    flow (break 1) [
+      string "(if";
+      pprint_expr e1;
+      pprint_expr e2;
+      pprint_expr e3]
+    ^^ string ")"
   | Lambda (vs, e) -> 
     flow (break 1) [
       string "(lambda"; 

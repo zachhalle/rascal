@@ -6,6 +6,7 @@ open Ast
 %token <float> FLOAT
 %token <string> IDENTIFIER
 %token <string> STRING
+%token IF
 %token DEFINE
 %token LAMBDA
 %token TRUE
@@ -40,6 +41,10 @@ expr:
   | QUOTE ; e = expr  { Quote e }
   | TRUE              { Bool true }
   | FALSE             { Bool false }
+  | IF ;
+    e1 = expr ;
+    e2 = expr ;
+    e3 = expr         { If (e1, e2, e3) }
   | LPAREN ;
     LAMBDA ;
     LPAREN ;

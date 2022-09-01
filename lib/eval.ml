@@ -10,7 +10,7 @@ let is_value e =
   | Int _ | Float _ | String _
   | Bool _ | Var _ | Quote _
   | Lambda _ | Primitive _ -> true
-  | List _ -> false
+  | List _ | If _ -> false
 
 let bind_all context vs es =
   List.fold_left2 (fun context v e -> bind context v e) context vs es
@@ -21,6 +21,15 @@ let rec eval context e =
   | Bool _ | Quote _ | Lambda _ 
   | Primitive _ -> e
   | Var v -> substitute context v
+  | If (e1, e2, e3) ->
+    begin match eval context e1 with
+    | Bool true -> eval context e2
+    | Bool false -> eval context e3
+    | e -> 
+      raise (
+        Runtime_error (
+          sprintf "Illegal condition in if-expression: %s" (pretty_expr e)))
+    end
   | List [] -> raise (Runtime_error "Illegal application: empty")
   | List es -> apply context (List.map (eval context) es)
 
@@ -32,13 +41,12 @@ and apply context es =
     | Some e' -> e'
     | None ->
       match e with
-      | Primitive _ -> assert false
+      | Primitive _ | If _ | Var _ -> assert false
       | Int _ | Float _ | String _
       | Bool _ | Quote _ | List _ ->
         raise (
           Runtime_error (
             sprintf "Illegal application: head isn't a procedure: %s" (pretty_expr e)))
-      | Var v -> apply context (substitute context v :: es')
       | Lambda (vs, e') ->
         let nvs = List.length vs in
         let nes = List.length es' in
