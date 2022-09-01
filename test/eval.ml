@@ -64,6 +64,76 @@ let%expect_test _ =
 (* expressions *)
 
 let%expect_test _ =
+  let e = parse ["(+)"] in
+  eval_and_print_prog e;
+  [%expect {| 0 |}]
+
+let%expect_test _ =
+  let e = parse ["(+ -1)"] in
+  eval_and_print_prog e;
+  [%expect {| -1 |}]
+
+let%expect_test _ =
   let e = parse ["(+ 1 2)"] in
   eval_and_print_prog e;
   [%expect {| 3 |}]
+
+let%expect_test _ =
+  let e = parse ["(+ 1 -2 3)"] in
+  eval_and_print_prog e;
+  [%expect {| 2 |}]
+
+let%expect_test _ =
+  let e = parse ["(- 1 -2 3)"] in
+  eval_and_print_prog e;
+  [%expect {| 0 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define positive? (lambda (d) (> d 0)))";
+    "(positive? 1)"]
+  in
+  eval_and_print_prog e;
+  [%expect {| true |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define positive? (lambda (d) (> d 0)))";
+    "(positive? 0)"]
+  in
+  eval_and_print_prog e;
+  [%expect {| false |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define positive? (lambda (d) (> d 0)))";
+    "(if (positive? 1) 'mario 'luigi)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 'mario |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define positive? (lambda (d) (> d 0)))";
+    "(if (positive? -1) 'mario 'luigi)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 'luigi |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define incr (lambda (x) (+ x 1)))";
+    "(define decr (lambda (x) (- x 1)))";
+    "((if true incr decr) 0)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 1 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define incr (lambda (x) (+ x 1)))";
+    "(define decr (lambda (x) (- x 1)))";
+    "((if false incr decr) 0)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| -1 |}]
