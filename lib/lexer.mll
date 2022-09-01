@@ -11,7 +11,7 @@ let int   = '-'? digit digit*
 let frac  = '.' digit*
 let float = digit* frac?
 
-let leading_char  = ['a'-'z' 'A'-'Z' '+' '-' '*' '/' '_' '!' '?']
+let leading_char  = ['a'-'z' 'A'-'Z' '+' '-' '*' '/' '_' '!' '?' '>' '<']
 let trailing_char = ['a'-'z' 'A'-'Z' '0'-'9' '+' '-' '*' '/' '_' '!' '?' '>' '<']
 let identifier    = leading_char trailing_char*
 
