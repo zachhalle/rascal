@@ -65,6 +65,14 @@ let%expect_test _ =
   parse_and_print ["'('(1 2 3) '(4 5) '(6 '(7 8)))"];
   [%expect {| '('(1 2 3) '(4 5) '(6 '(7 8))) |}]
 
+let%expect_test _ =
+  parse_and_print [
+    "(define positive? (lambda (d) (> d 0)))";
+    "(if (postive? 1) 'mario 'luigi)"];
+  [%expect {|
+    (define positive? (lambda (d) (> d 0)))
+    (if (postive? 1) 'mario 'luigi) |}]
+
 (* Programs that should not parse: *)
 
 let%expect_test _ =

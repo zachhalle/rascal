@@ -41,10 +41,12 @@ expr:
   | QUOTE ; e = expr  { Quote e }
   | TRUE              { Bool true }
   | FALSE             { Bool false }
-  | IF ;
+  | LPAREN ;
+    IF ;
     e1 = expr ;
     e2 = expr ;
-    e3 = expr         { If (e1, e2, e3) }
+    e3 = expr ;       
+    RPAREN            { If (e1, e2, e3) }
   | LPAREN ;
     LAMBDA ;
     LPAREN ;
