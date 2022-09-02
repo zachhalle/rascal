@@ -28,6 +28,7 @@ rule token =
   | int        { INT (int_of_string (lexeme lexbuf)) } 
   | float      { FLOAT (float_of_string (lexeme lexbuf)) }
   | "'"        { QUOTE }
+  | "let"      { LET }
   | "if"       { IF }
   | "true"     { TRUE }
   | "false"    { FALSE }

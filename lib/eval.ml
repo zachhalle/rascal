@@ -10,7 +10,7 @@ let is_value e =
   | Int _ | Float _ | String _
   | Bool _ | Var _ | Quote _
   | Lambda _ | Primitive _ -> true
-  | List _ | If _ -> false
+  | List _ | If _ | Let _ -> false
 
 let bind_all context vs es =
   List.fold_left2 (fun context v e -> bind context v e) context vs es
@@ -21,6 +21,9 @@ let rec eval context e =
   | Bool _ | Quote _ | Lambda _ 
   | Primitive _ -> e
   | Var v -> substitute context v
+  | Let (bindings, e) ->
+    let context' = List.fold_left (fun context (v, e) -> bind context v (eval context e)) context bindings in
+    eval context' e
   | If (e1, e2, e3) ->
     begin match eval context e1 with
     | Bool true -> eval context e2
@@ -41,7 +44,7 @@ and apply context es =
     | Some e' -> e'
     | None ->
       match e with
-      | Primitive _ | If _ | Var _ -> assert false
+      | Primitive _ | If _ | Var _ | Let _ -> assert false
       | Int _ | Float _ | String _
       | Bool _ | Quote _ | List _ ->
         raise (
