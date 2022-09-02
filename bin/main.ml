@@ -12,7 +12,7 @@ let repl () =
     printf "%s" prompt; flush stdout;
     let input = read_line () in
     (* user commands *)
-    begin match List.filter ((<>) "") (String.split_on_char ' ' input) with
+    begin match Str.split (Str.regexp "[ \t]+") input with
     | ":context" :: vs ->
       let maybe_print v =
         begin match substitute_opt context v with
