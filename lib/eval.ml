@@ -20,7 +20,10 @@ let rec eval context e =
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Lambda _ 
   | Primitive _ -> e
-  | Var v -> substitute context v
+  | Var v -> 
+    begin try substitute context v with
+    | Undefined_variable v -> raise (Runtime_error (sprintf "Undefined variable: %s" v))
+    end
   | Let (bindings, e) ->
     let context' = List.fold_left (fun context (v, e) -> bind context v (eval context e)) context bindings in
     eval context' e
@@ -40,7 +43,7 @@ and apply context es =
   match es with
   | [] -> assert false
   | e :: es' ->
-    match apply_primitive e es' with
+    try match apply_primitive e es' with
     | Some e' -> e'
     | None ->
       match e with
@@ -59,6 +62,8 @@ and apply context es =
               sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nvs nes))
         else
           eval (bind_all context vs es') e'
+    with
+    | Primitive.Runtime_error msg -> raise (Runtime_error msg)
             
 let eval_stmt context s =
   match s with
