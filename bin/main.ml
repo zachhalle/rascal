@@ -36,6 +36,7 @@ let repl () =
       with
       | Eval.Runtime_error msg ->
         fprintf stderr "%s\n" msg;
+        flush stderr;
         loop context
     end
   in
