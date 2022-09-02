@@ -6,6 +6,7 @@ open Ast
 %token <float> FLOAT
 %token <string> IDENTIFIER
 %token <string> STRING
+%token LET
 %token IF
 %token DEFINE
 %token LAMBDA
@@ -42,6 +43,13 @@ expr:
   | TRUE              { Bool true }
   | FALSE             { Bool false }
   | LPAREN ;
+    LET ;
+    LPAREN ;
+    bindings = list(binding)
+    RPAREN ;
+    e = expr
+    RPAREN            { Let (bindings, e) } 
+  | LPAREN ;
     IF ;
     e1 = expr ;
     e2 = expr ;
@@ -57,5 +65,11 @@ expr:
   | LPAREN ;
     es = list(expr) ; 
     RPAREN            { List es }
+
+binding:
+  | LPAREN ;
+    v = IDENTIFIER
+    e = expr ;
+    RPAREN          { (v, e) }
 
 %%

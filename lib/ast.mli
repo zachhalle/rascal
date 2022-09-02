@@ -5,6 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Primitive of string
+  | Let of ((string * expr) list) * expr
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr

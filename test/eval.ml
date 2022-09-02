@@ -121,13 +121,34 @@ let%expect_test _ =
   [%expect {| 'luigi |}]
 
 let%expect_test _ =
-  let e = parse [
-    "(define incr (lambda (x) (+ x 1)))";
-    "(define decr (lambda (x) (- x 1)))";
-    "((if true incr decr) 0)"
-  ] in
+  let e = parse ["(let ((x 1) (y 2)) (+ x y))"] in
+  eval_and_print_prog e;
+  [%expect {| 3 |}]
+
+let%expect_test _ =
+  let e = parse ["(let ((sum2 (lambda (x y) (+ x y)))) (sum2 100 200))"] in
+  eval_and_print_prog e;
+  [%expect {| 300 |}]
+
+let%expect_test _ =
+  let e = parse ["(let ((x 1) (y x)) x)"] in
   eval_and_print_prog e;
   [%expect {| 1 |}]
+
+let%expect_test _ =
+  let e = parse ["(let ((x 1) (y (+ x 1)) (z (+ x y))) (+ x y z))"] in
+  eval_and_print_prog e;
+  [%expect {| 6 |}]
+
+let%expect_test _ =
+  let e = parse [
+   "(let (";
+   "   (x (let ((x 1) (y 2)) (+ x y)))";
+   "   (y 3)";
+   ") (- x y))";
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 0 |}]
 
 let%expect_test _ =
   let e = parse [
@@ -137,3 +158,12 @@ let%expect_test _ =
   ] in
   eval_and_print_prog e;
   [%expect {| -1 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define incr (lambda (x) (+ x 1)))";
+    "(define decr (lambda (x) (- x 1)))";
+    "((if true incr decr) 0)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 1 |}]

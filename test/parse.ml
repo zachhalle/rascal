@@ -73,6 +73,22 @@ let%expect_test _ =
     (define positive? (lambda (d) (> d 0)))
     (if (postive? 1) 'mario 'luigi) |}]
 
+let%expect_test _ =
+  parse_and_print ["(let ((x 1) (y 2)) (+ x y))"];
+  [%expect {| (let ((x 1) (y 2)) (+ x y)) |}]
+
+let%expect_test _ =
+  parse_and_print ["(let ((sum2 (lambda (x y) (+ x y)))) (sum2 100 200))"];
+  [%expect {| (let ((sum2 (lambda (x y) (+ x y)))) (sum2 100 200)) |}]
+
+let%expect_test _ =
+  parse_and_print ["(let ((x 1) (y x)) x)"];
+  [%expect {| (let ((x 1) (y x)) x) |}]
+
+let%expect_test _ =
+  parse_and_print ["(let ((x 1) (y (+ x 1)) (z (+ x y))) (+ x y z))"];
+  [%expect {| (let ((x 1) (y (+ x 1)) (z (+ x y))) (+ x y z)) |}]
+
 (* Programs that should not parse: *)
 
 let%expect_test _ =

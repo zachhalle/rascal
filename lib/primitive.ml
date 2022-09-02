@@ -42,7 +42,7 @@ let apply_primitive e es =
   match e with
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Lambda _
-  | List _ | Var _ | If _ -> None
+  | List _ | Var _ | If _ | Let _ -> None
   | Primitive v -> 
     match find_opt v primitives with
     | None -> None

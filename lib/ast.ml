@@ -5,6 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Primitive of string
+  | Let of ((string * expr) list) * expr
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr
@@ -24,6 +25,13 @@ let rec pprint_expr e =
   | Var v -> string v
   | Primitive v -> string v
   | Quote e -> char '\'' ^^ pprint_expr e
+  | Let (bindings, e) ->
+    let pprint_binding (v, e) = enclose lparen rparen (flow (break 1) [string v; pprint_expr e]) in
+    flow (break 1) [
+      string "(let";
+      enclose lparen rparen (flow_map (break 1) pprint_binding bindings);
+      pprint_expr e]
+    ^^ string ")"
   | If (e1, e2, e3) ->
     flow (break 1) [
       string "(if";
