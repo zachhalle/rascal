@@ -11,6 +11,8 @@ let really_empty_context = empty
 let substitute context var =
   try find var context with Not_found -> raise (Undefined_variable var)
 
+let substitute_opt context var = find_opt var context 
+
 let bind context var expr =
   match expr with
   | Var var' -> add var (substitute context var') context
