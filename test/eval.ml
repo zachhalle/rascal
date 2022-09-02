@@ -143,8 +143,8 @@ let%expect_test _ =
 let%expect_test _ =
   let e = parse [
    "(let (";
-   "   (x (let ((x 1) (y 2)) (+ x y)))";
-   "   (y 3)";
+   "  (x (let ((x 1) (y 2)) (+ x y)))";
+   "  (y 3)";
    ") (- x y))";
   ] in
   eval_and_print_prog e;
