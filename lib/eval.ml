@@ -60,7 +60,7 @@ and apply context es =
       if nvs != nes then
         raise (
           Runtime_error (
-            sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nvs nes))
+            sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nes nvs))
       else
         eval (bind_all context vs es') e'
                 
