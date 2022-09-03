@@ -6,6 +6,24 @@ open Printf
 
 module Eval = Rascal.Eval
 
+let batch ~print_result files =
+  let eval_file (context, _) file =
+    match parse_file file with
+    | None -> exit 1
+    | Some program ->
+      try match eval_prog context program with
+      | None -> context, None
+      | Some (context', e) -> context', Some e
+      with
+      | Runtime_error msg -> fprintf stderr "Runtime error: %s\n" msg; exit 1
+  in
+  let (context, result) = List.fold_left eval_file (empty_context, None) files in
+  begin match print_result, result with
+  | true, Some e -> printf "%s\n" (pretty_expr e)
+  | _ -> ()
+  end;
+  context
+
 let repl () =
   let prompt = "rascal $ " in
   let rec loop context = 
@@ -43,4 +61,23 @@ let repl () =
   try loop empty_context with
   | End_of_file -> printf "Exiting..."; flush stdout
 
-let () = repl ()
+let main () = 
+  let push r x = r := x :: !r in
+  let init_files = ref [] in
+  let batch_files = ref [] in
+  let spec_list = [
+    ("--init", 
+     Arg.String (push init_files),
+     "Load the interpreter with the given file. May be specified multiple times.")
+  ] in
+  let usage_msg = "rascal [--init <source1> [--init <source2> ...] | <source1> [<source2> ...]]" in
+  Arg.parse spec_list (push batch_files) usage_msg;
+  batch_files := List.rev (!batch_files);
+  init_files := List.rev (!init_files);
+  match List.length (!init_files) > 0, List.length (!batch_files) > 0 with
+  | false, false -> repl ()
+  | true, true -> Arg.usage spec_list usage_msg
+  | true, false -> failwith "Unimplemented"
+  | false, true -> ignore (batch ~print_result:true (!batch_files))
+
+let () = main ()
