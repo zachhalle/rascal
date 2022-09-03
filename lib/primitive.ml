@@ -38,17 +38,12 @@ let primitive_bindings =
   iter (fun prim _ -> bindings := (prim, Primitive prim) :: !bindings) primitives;
   !bindings
 
-let apply_primitive e es =
-  match e with
-  | Int _ | Float _ | String _
-  | Bool _ | Quote _ | Lambda _
-  | List _ | Var _ | If _ | Let _ -> None
-  | Primitive v -> 
-    match find_opt v primitives with
-    | None -> None
-    | Some primitive -> 
-      try Some (primitive es) with
-      | Match_failure _ ->
-        raise (
-          Runtime_error (
-            sprintf "Illegal application: illegal arguments to primitive procedure %s" (pretty_expr (List es))))
+let apply_primitive v es =
+  match find_opt v primitives with
+  | None -> raise (Runtime_error (sprintf "Undefined primitive %s" v))
+  | Some primitive -> 
+    try primitive es with
+    | Match_failure _ ->
+      raise (
+        Runtime_error (
+          sprintf "Illegal application: illegal arguments to primitive procedure %s" (pretty_expr (List es))))

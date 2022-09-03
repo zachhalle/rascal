@@ -43,28 +43,27 @@ and apply context es =
   match es with
   | [] -> assert false
   | e :: es' ->
-    try match apply_primitive e es' with
-    | Some e' -> e'
-    | None ->
-      match e with
-      | Primitive _ | If _ | Var _ | Let _ -> assert false
-      | Int _ | Float _ | String _
-      | Bool _ | Quote _ | List _ ->
+    match e with
+    | If _ | Var _ | Let _ | List _ -> assert false
+    | Int _ | Float _ | String _
+    | Bool _ | Quote _ ->
+      raise (
+        Runtime_error (
+          sprintf "Illegal application: head isn't a procedure: %s" (pretty_expr e)))
+    | Primitive primitive -> 
+      begin try apply_primitive primitive es' with
+      | Primitive.Runtime_error msg -> raise (Runtime_error msg)
+      end
+    | Lambda (vs, e') ->
+      let nvs = List.length vs in
+      let nes = List.length es' in
+      if nvs != nes then
         raise (
           Runtime_error (
-            sprintf "Illegal application: head isn't a procedure: %s" (pretty_expr e)))
-      | Lambda (vs, e') ->
-        let nvs = List.length vs in
-        let nes = List.length es' in
-        if nvs != nes then
-          raise (
-            Runtime_error (
-              sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nvs nes))
-        else
-          eval (bind_all context vs es') e'
-    with
-    | Primitive.Runtime_error msg -> raise (Runtime_error msg)
-            
+            sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nvs nes))
+      else
+        eval (bind_all context vs es') e'
+                
 let eval_stmt context s =
   match s with
   | Expr e -> (context, eval context e)
