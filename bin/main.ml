@@ -24,7 +24,7 @@ let batch ~print_result files =
   end;
   context
 
-let repl () =
+let repl init_files =
   let prompt = "rascal $ " in
   let rec loop context = 
     printf "%s" prompt; flush stdout;
@@ -58,8 +58,13 @@ let repl () =
         loop context
     end
   in
-  try loop empty_context with
-  | End_of_file -> printf "Exiting..."; flush stdout
+  let context =
+    match init_files with
+    | [] -> empty_context
+    | _ -> batch ~print_result:false init_files
+  in
+  try loop context with
+  | End_of_file -> printf "Exiting...\n"; flush stdout
 
 let main () = 
   let push r x = r := x :: !r in
@@ -75,9 +80,9 @@ let main () =
   batch_files := List.rev (!batch_files);
   init_files := List.rev (!init_files);
   match List.length (!init_files) > 0, List.length (!batch_files) > 0 with
-  | false, false -> repl ()
   | true, true -> Arg.usage spec_list usage_msg
-  | true, false -> failwith "Unimplemented"
+  | false, false -> repl []
+  | true, false -> repl !init_files
   | false, true -> ignore (batch ~print_result:true (!batch_files))
 
 let () = main ()
