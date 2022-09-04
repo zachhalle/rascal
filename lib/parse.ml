@@ -1,4 +1,4 @@
-open Lexer
+        open Lexer
 open Lexing
 open Printf
 
@@ -8,8 +8,8 @@ let print_pos out lexbuf =
 
 let parse_with_error lexbuf =
   try Some (Parser.program Lexer.token lexbuf) with
-  | SyntaxError msg -> fprintf stderr "%a: %s\n" print_pos lexbuf msg; None
-  | Parser.Error -> fprintf stderr "%a: syntax error\n" print_pos lexbuf; None
+  | SyntaxError msg -> fprintf stderr "%a: %s\n" print_pos lexbuf msg; flush stderr; None
+  | Parser.Error -> fprintf stderr "%a: syntax error\n" print_pos lexbuf; flush stderr; None
 
 let parse_stdin () =
   let lexbuf = Lexing.from_channel stdin in
