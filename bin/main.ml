@@ -82,9 +82,9 @@ let main () =
   ] in
   let usage_msg = "rascal [--init <source1> [--init <source2> ...] | <source1> [<source2> ...]]" in
   Arg.parse spec_list (push batch_files) usage_msg;
-  batch_files := List.rev (!batch_files);
-  init_files := List.rev (!init_files);
-  match List.length (!init_files) > 0, List.length (!batch_files) > 0 with
+  batch_files := List.rev !batch_files;
+  init_files := List.rev !init_files;
+  match List.length !init_files > 0, List.length !batch_files > 0 with
   | true, true -> Arg.usage spec_list usage_msg
   | false, false -> repl []
   | true, false -> repl !init_files
