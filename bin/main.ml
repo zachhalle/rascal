@@ -27,42 +27,46 @@ let batch ~print_result files =
 let repl init_files =
   let prompt = "rascal $ " in
   let rec loop context = 
-    printf "%s" prompt; flush stdout;
-    let input = read_line () in
-    (* user commands *)
-    begin match Str.split (Str.regexp "[ \t]+") input with
-    | ":context" :: vs ->
-      let maybe_print v =
-        begin match substitute_opt context v with
-        | None -> printf "%s is undefined\n" v
-        | Some e -> printf "%s is bound to %s\n" v (pretty_expr e)
-        end
-      in
-      List.iter maybe_print vs;
-      loop context
-    | _ -> ()
-    end;
-    (* read, eval, print *)
-    begin match parse_string input with
-    | None -> loop context
-    | Some e ->
-      try match eval_prog context e with
-      | None -> loop context
-      | Some (context', e') ->
-        printf "%s\n" (pretty_expr e');
-        loop context'
-      with
-      | Eval.Runtime_error msg ->
-        fprintf stderr "%s\n" msg;
-        flush stderr;
+    try
+      printf "%s" prompt; flush stdout;
+      let input = read_line () in
+      (* user commands *)
+      begin match Str.split (Str.regexp "[ \t]+") input with
+      | ":context" :: vs ->
+        let maybe_print v =
+          begin match substitute_opt context v with
+          | None -> printf "%s is undefined\n" v
+          | Some e -> printf "%s is bound to %s\n" v (pretty_expr e)
+          end
+        in
+        List.iter maybe_print vs;
         loop context
-    end
+      | _ -> ()
+      end;
+      (* read, eval, print *)
+      begin match parse_string input with
+      | None -> loop context
+      | Some e ->
+        try match eval_prog context e with
+        | None -> loop context
+        | Some (context', e') ->
+          printf "%s\n" (pretty_expr e');
+          loop context'
+        with
+        | Eval.Runtime_error msg ->
+          fprintf stderr "%s\n" msg;
+          flush stderr;
+          loop context
+      end
+    with
+    | Sys.Break -> printf "\n"; loop context
   in
   let context =
     match init_files with
     | [] -> empty_context
     | _ -> batch ~print_result:false init_files
   in
+  Sys.catch_break true;
   try loop context with
   | End_of_file -> printf "Exiting...\n"; flush stdout
 
