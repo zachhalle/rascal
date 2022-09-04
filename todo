@@ -1,2 +1,3 @@
 - define-rec, let-rec
-- main/repl
+- int + float -> num
+- more primitives
