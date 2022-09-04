@@ -32,6 +32,7 @@ let repl init_files =
       let input = read_line () in
       (* user commands *)
       begin match Str.split (Str.regexp "[ \t]+") input with
+      | ":exit" :: _ -> raise End_of_file
       | ":context" :: vs ->
         let maybe_print v =
           begin match substitute_opt context v with
