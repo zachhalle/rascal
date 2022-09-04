@@ -1,4 +1,4 @@
-        open Lexer
+open Lexer
 open Lexing
 open Printf
 
