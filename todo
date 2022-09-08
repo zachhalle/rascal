@@ -1,3 +1,5 @@
-- define-rec, let-rec
+- fix x is e
+- let-rec cont'd
+- define-rec
 - int + float -> num
 - more primitives
