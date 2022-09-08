@@ -185,6 +185,14 @@ let%expect_test _ =
    [%expect {| false |}]
 
 let%expect_test _ =
+   let e = parse [
+     "(define f (lambda () 3))";
+     "(f)"
+   ] in
+   eval_and_print_prog e;
+  [%expect {| 3 |}]
+
+let%expect_test _ =
   let e = parse [
     "(define empty? (lambda (l) (= l '())))";
     "(let-rec ((x 3)) x)"
@@ -200,7 +208,7 @@ let%expect_test _ =
     "            (if                ";
     "              (empty? l)       ";
     "              '()              ";
-    "              (cons  (f (car l))  (map f (cdr l)))";
+    "              (cons (f (car l)) (map f (cdr l)))";
     "            ))))               ";
     "            (map incr '()))    ";
   ] in
@@ -215,7 +223,7 @@ let%expect_test _ =
     "            (if                ";
     "              (empty? l)       ";
     "              '()              ";
-    "              (cons  (f (car l)) (map f (cdr l)))";
+    "              (cons (f (car l)) (map f (cdr l)))";
     "            ))))               ";
     "            (map incr '(0 1 2 3 -1)))";
   ] in
