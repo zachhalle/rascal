@@ -89,6 +89,14 @@ let%expect_test _ =
   parse_and_print ["(let ((x 1) (y (+ x 1)) (z (+ x y))) (+ x y z))"];
   [%expect {| (let ((x 1) (y (+ x 1)) (z (+ x y))) (+ x y z)) |}]
 
+let%expect_test _ =
+  parse_and_print ["(let ((x 3)) x)"];
+  [%expect {| (let ((x 3)) x) |}]
+
+let%expect_test _ =
+  parse_and_print ["(let-rec ((x 3)) x)"];
+  [%expect {| (let-rec (x 3) x) |}]
+
 (* Programs that should not parse: *)
 
 let%expect_test _ =

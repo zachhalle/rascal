@@ -167,3 +167,58 @@ let%expect_test _ =
   ] in
   eval_and_print_prog e;
   [%expect {| 1 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(empty? '())"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| true |}]
+  
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(empty? '(0 1 2 3 4 5))"
+  ] in
+  eval_and_print_prog e;
+   [%expect {| false |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(let-rec ((x 3)) x)"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 3 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(define incr (lambda (x) (+ x 1)))";
+    "(let-rec ((map (lambda (f l)   ";
+    "            (if                ";
+    "              (empty? l)       ";
+    "              '()              ";
+    "              (cons  (f (car l))  (map f (cdr l)))";
+    "            ))))               ";
+    "            (map incr '()))    ";
+  ] in
+  eval_and_print_prog e;
+  [%expect {| '() |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(define incr (lambda (x) (+ x 1)))";
+    "(let-rec ((map (lambda (f l)   ";
+    "            (if                ";
+    "              (empty? l)       ";
+    "              '()              ";
+    "              (cons  (f (car l)) (map f (cdr l)))";
+    "            ))))               ";
+    "            (map incr '(0 1 2 3 -1)))";
+  ] in
+  eval_and_print_prog e;
+  [%expect {| '(1 2 3 4 0) |}]
+

@@ -29,6 +29,7 @@ rule token =
   | float      { FLOAT (float_of_string (lexeme lexbuf)) }
   | "'"        { QUOTE }
   | "let"      { LET }
+  | "let-rec"  { LET_REC }
   | "if"       { IF }
   | "true"     { TRUE }
   | "false"    { FALSE }

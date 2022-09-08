@@ -6,6 +6,7 @@ type expr =
   | Var of string
   | Primitive of string
   | Let of ((string * expr) list) * expr
+  | Let_rec of (string * expr) * expr
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr

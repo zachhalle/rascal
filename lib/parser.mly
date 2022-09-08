@@ -7,6 +7,7 @@ open Ast
 %token <string> IDENTIFIER
 %token <string> STRING
 %token LET
+%token LET_REC
 %token IF
 %token DEFINE
 %token LAMBDA
@@ -49,6 +50,16 @@ expr:
     RPAREN ;
     e = expr
     RPAREN            { Let (bindings, e) } 
+  | LPAREN ;
+    LET_REC ;
+    LPAREN ;
+    LPAREN ;
+    v = IDENTIFIER ;
+    e1 = expr ;
+    RPAREN ;
+    RPAREN ;
+    e2 = expr ;
+    RPAREN            { Let_rec ((v, e1), e2) } 
   | LPAREN ;
     IF ;
     e1 = expr ;
