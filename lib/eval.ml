@@ -28,9 +28,14 @@ let rec eval context e =
   | Let (bindings, e) ->
     let context' = List.fold_left (fun context (v, e) -> bind context v (eval context e)) context bindings in
     eval context' e
-  | Let_rec ((v, e1), e2) ->
-    let context' = bind context v (eval context (Fix (v, e1))) in
-    eval context' e2
+  | Let_rec (bindings, e) ->
+    let context' =
+      List.fold_left
+        (fun context (v, e) -> bind context v (eval context (Fix (v, e))))
+        context 
+        bindings
+    in
+    eval context' e
   | If (e1, e2, e3) ->
     begin match eval context e1 with
     | Bool true -> eval context e2

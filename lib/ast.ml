@@ -7,7 +7,7 @@ type expr =
   | Primitive of string
   | Fix of string * expr
   | Let of ((string * expr) list) * expr
-  | Let_rec of (string * expr) * expr
+  | Let_rec of ((string * expr) list) * expr
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr
@@ -35,11 +35,12 @@ let rec pprint_expr e =
       enclose lparen rparen (flow_map (break 1) pprint_binding bindings);
       pprint_expr e]
     ^^ string ")"
-  | Let_rec ((v, e1), e2) ->
+  | Let_rec (bindings, e) ->
+    let pprint_binding (v, e) = enclose lparen rparen (flow (break 1) [string v; pprint_expr e]) in
     flow (break 1) [
       string "(let-rec";
-      enclose lparen rparen (flow (break 1) [string v; pprint_expr e1]);
-      pprint_expr e2]
+      enclose lparen rparen (flow_map (break 1) pprint_binding bindings);
+      pprint_expr e]
     ^^ string ")"
   | If (e1, e2, e3) ->
     flow (break 1) [

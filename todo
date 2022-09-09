@@ -1,4 +1,3 @@
-- let-rec cont'd
 - define-rec
 - int + float -> num
 - more primitives

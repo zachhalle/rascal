@@ -95,7 +95,7 @@ let%expect_test _ =
 
 let%expect_test _ =
   parse_and_print ["(let-rec ((x 3)) x)"];
-  [%expect {| (let-rec (x 3) x) |}]
+  [%expect {| (let-rec ((x 3)) x) |}]
 
 (* Programs that should not parse: *)
 

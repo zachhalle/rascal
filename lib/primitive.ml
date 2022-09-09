@@ -15,7 +15,7 @@ let rec for_all2 p xs ys =
   | _, _ -> false
 
 let [@warning "-8"] eq [v; w] =
-  let rec binding_strucural_eq (v, e) (v', e') = String.equal v v' && structural_eq e e'
+  let rec binding_structural_eq (v, e) (v', e') = String.equal v v' && structural_eq e e'
   and structural_eq e1 e2 =
     match e1, e2 with
     | Int x, Int y -> x == y
@@ -26,9 +26,9 @@ let [@warning "-8"] eq [v; w] =
     | Primitive x, Primitive y -> String.equal x y
     | Fix (v, e), Fix (v', e') -> String.equal v v' && structural_eq e e'
     | Let (bindings, e), Let (bindings', e') ->
-      for_all2 binding_strucural_eq bindings bindings' && structural_eq e e'
-    | Let_rec ((v, e1), e2), Let_rec ((v', e1'), e2') ->
-      String.equal v v' && structural_eq e1 e1' && structural_eq e2 e2'
+      for_all2 binding_structural_eq bindings bindings' && structural_eq e e'
+    | Let_rec (bindings, e), Let_rec (bindings', e') ->
+      for_all2 binding_structural_eq bindings bindings' && structural_eq e e'
     | If (e1, e2, e3), If (e1', e2', e3') -> for_all2 structural_eq [e1; e2; e3] [e1'; e2'; e3']
     | Quote e1, Quote e2 -> structural_eq e1 e2
     | Lambda (vs, e), Lambda (vs', e') -> for_all2 String.equal vs vs' && structural_eq e e'

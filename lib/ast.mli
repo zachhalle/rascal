@@ -7,7 +7,7 @@ type expr =
   | Primitive of string
   | Fix of string * expr
   | Let of ((string * expr) list) * expr
-  | Let_rec of (string * expr) * expr
+  | Let_rec of ((string * expr) list) * expr
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr

@@ -53,13 +53,10 @@ expr:
   | LPAREN ;
     LET_REC ;
     LPAREN ;
-    LPAREN ;
-    v = IDENTIFIER ;
-    e1 = expr ;
+    bindings = list(binding)
     RPAREN ;
-    RPAREN ;
-    e2 = expr ;
-    RPAREN            { Let_rec ((v, e1), e2) } 
+    e = expr ;
+    RPAREN            { Let_rec (bindings, e) } 
   | LPAREN ;
     IF ;
     e1 = expr ;
