@@ -1,4 +1,3 @@
-- fix x is e
 - let-rec cont'd
 - define-rec
 - int + float -> num

@@ -5,6 +5,7 @@ type expr =
   | Bool of bool
   | Var of string
   | Primitive of string
+  | Fix of string * expr
   | Let of ((string * expr) list) * expr
   | Let_rec of (string * expr) * expr
   | If of expr * expr * expr
@@ -25,6 +26,7 @@ let rec pprint_expr e =
   | Bool b -> string (string_of_bool b)
   | Var v -> string v
   | Primitive v -> string v
+  | Fix (v, e) -> flow (break 1) [string "(fix"; string v; pprint_expr e] ^^ string ")"
   | Quote e -> char '\'' ^^ pprint_expr e
   | Let (bindings, e) ->
     let pprint_binding (v, e) = enclose lparen rparen (flow (break 1) [string v; pprint_expr e]) in

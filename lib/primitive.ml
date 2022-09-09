@@ -24,6 +24,7 @@ let [@warning "-8"] eq [v; w] =
     | String x, String y -> String.equal x y
     | Var x, Var y -> String.equal x y
     | Primitive x, Primitive y -> String.equal x y
+    | Fix (v, e), Fix (v', e') -> String.equal v v' && structural_eq e e'
     | Let (bindings, e), Let (bindings', e') ->
       for_all2 binding_strucural_eq bindings bindings' && structural_eq e e'
     | Let_rec ((v, e1), e2), Let_rec ((v', e1'), e2') ->
@@ -52,6 +53,7 @@ let [@warning "-8"] eq [v; w] =
     | Var _ -> assert false
     | Primitive _ -> raise Illegal_argument
     | If _ -> raise Illegal_argument
+    | Fix _ -> raise Illegal_argument
     | Let _ -> raise Illegal_argument
     | Let_rec _ -> raise Illegal_argument
     | Quote _ -> ()

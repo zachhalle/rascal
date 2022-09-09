@@ -10,7 +10,7 @@ let is_value e =
   | Int _ | Float _ | String _
   | Bool _ | Var _ | Quote _
   | Lambda _ | Primitive _ -> true
-  | List _ | If _ | Let _ | Let_rec _ -> false
+  | List _ | If _ | Fix _ | Let _ | Let_rec _ -> false
 
 let bind_all context vs es =
   List.fold_left2 (fun context v e -> bind context v e) context vs es
@@ -24,11 +24,12 @@ let rec eval context e =
     begin try substitute context v with
     | Undefined_variable v -> raise (Runtime_error (sprintf "Undefined variable: %s" v))
     end
+  | Fix (v, e) -> eval (bind context v (Fix (v, e))) e
   | Let (bindings, e) ->
     let context' = List.fold_left (fun context (v, e) -> bind context v (eval context e)) context bindings in
     eval context' e
   | Let_rec ((v, e1), e2) ->
-    let context' = bind context v (eval (bind context v e1) e1) in
+    let context' = bind context v (eval context (Fix (v, e1))) in
     eval context' e2
   | If (e1, e2, e3) ->
     begin match eval context e1 with
@@ -47,7 +48,7 @@ and apply context es =
   | [] -> assert false
   | e :: es' ->
     match e with
-    | If _ | Var _ | Let _ | Let_rec _ | List _ -> assert false
+    | If _ | Var _ | Fix _ | Let _ | Let_rec _ | List _ -> assert false
     | Int _ | Float _ | String _
     | Bool _ | Quote _ ->
       raise (
