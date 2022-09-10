@@ -77,6 +77,7 @@ let eval_stmt context s =
   match s with
   | Expr e -> (context, eval context e)
   | Define (v, e) -> let e' = eval context e in (bind context v e', e')
+  | Define_rec (v, e) -> let e' = eval context (Fix (v, e)) in (bind context v e', e')
 
 let eval_prog context prog =
   match prog with

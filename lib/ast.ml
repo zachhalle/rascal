@@ -15,6 +15,7 @@ type expr =
 
 type stmt =
   | Define of string * expr
+  | Define_rec of string * expr
   | Expr of expr
 
 let rec pprint_expr e =
@@ -61,6 +62,7 @@ let pprint_stmt s =
   let open PPrint in
   match s with
   | Define (v, e) -> flow (break 1) [string "(define"; string v; pprint_expr e] ^^ string ")"
+  | Define_rec (v, e) -> flow (break 1) [string "(define-rec"; string v; pprint_expr e] ^^ string ")"
   | Expr e -> pprint_expr e
 
 let pprint_prog p =

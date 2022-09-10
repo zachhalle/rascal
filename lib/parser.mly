@@ -10,6 +10,7 @@ open Ast
 %token LET_REC
 %token IF
 %token DEFINE
+%token DEFINE_REC
 %token LAMBDA
 %token TRUE
 %token FALSE
@@ -33,6 +34,11 @@ stmt:
     v = IDENTIFIER ;
     e = expr ;
     RPAREN           { Define (v, e) }
+  | LPAREN ;
+    DEFINE_REC ;
+    v = IDENTIFIER ;
+    e = expr ;
+    RPAREN           { Define_rec (v, e) }
   | e = expr         { Expr e }
 
 expr:

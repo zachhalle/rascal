@@ -230,3 +230,28 @@ let%expect_test _ =
   eval_and_print_prog e;
   [%expect {| '(1 2 3 4 0) |}]
 
+let%expect_test _ =
+  let e = parse [
+    "(define empty? (lambda (l) (= l '())))";
+    "(define-rec length (lambda (l)";
+    "  (if (empty? l)";
+    "      0";
+    "      (+ 1 (length (cdr l)))"; 
+    "  )))";
+    "(length '(100 200 400 '(700 800)))"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 4 |}]
+
+let%expect_test _ =
+  let e = parse [
+     "(define-rec fold (lambda (f i l)";
+     "  (if (= l '())";
+     "      i";
+     "      (fold f (f i (car l)) (cdr l))";
+     "  )))";
+     "(define sum (lambda (l) (fold (lambda (x y) (+ x y)) 0 l)))";
+     "(sum '(1000 -100 33 66))"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 999 |}]

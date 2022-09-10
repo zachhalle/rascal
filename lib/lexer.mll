@@ -23,24 +23,25 @@ let rparen = ')'
 
 rule token =
   parse 
-  | whitespace { token lexbuf }
-  | newline    { new_line lexbuf; token lexbuf }
-  | int        { INT (int_of_string (lexeme lexbuf)) } 
-  | float      { FLOAT (float_of_string (lexeme lexbuf)) }
-  | "'"        { QUOTE }
-  | "let"      { LET }
-  | "let-rec"  { LET_REC }
-  | "if"       { IF }
-  | "true"     { TRUE }
-  | "false"    { FALSE }
-  | "define"   { DEFINE }
-  | "lambda"   { LAMBDA }
-  | identifier { IDENTIFIER (lexeme lexbuf) }
-  | '"'        { read_string (Buffer.create 10) lexbuf }
-  | '('        { LPAREN }
-  | ')'        { RPAREN }
-  | _          { raise (SyntaxError ("Unexpected character: " ^ lexeme lexbuf)) }
-  | eof        { EOF }
+  | whitespace   { token lexbuf }
+  | newline      { new_line lexbuf; token lexbuf }
+  | int          { INT (int_of_string (lexeme lexbuf)) } 
+  | float        { FLOAT (float_of_string (lexeme lexbuf)) }
+  | "'"          { QUOTE }
+  | "let"        { LET }
+  | "let-rec"    { LET_REC }
+  | "if"         { IF }
+  | "true"       { TRUE }
+  | "false"      { FALSE }
+  | "define"     { DEFINE }
+  | "define-rec" { DEFINE_REC }
+  | "lambda"     { LAMBDA }
+  | identifier   { IDENTIFIER (lexeme lexbuf) }
+  | '"'          { read_string (Buffer.create 10) lexbuf }
+  | '('          { LPAREN }
+  | ')'          { RPAREN }
+  | _            { raise (SyntaxError ("Unexpected character: " ^ lexeme lexbuf)) }
+  | eof          { EOF }
 
 and read_string buffer =
   parse

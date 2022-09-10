@@ -15,6 +15,7 @@ type expr =
 
 type stmt =
   | Define of string * expr
+  | Define_rec of string * expr
   | Expr of expr
 
 val pretty_expr : expr -> string
