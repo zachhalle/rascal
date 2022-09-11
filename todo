@@ -1,5 +1,5 @@
 - fix this program:
-  (define f (lambda (x y) (f x y)))
+  (define f (lambda (x y) (+ x y)))
   (define f (lambda (x y) (f x y)))
   (f 100 200)
 - int + float -> num
