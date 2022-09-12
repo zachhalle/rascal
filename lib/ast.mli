@@ -11,6 +11,7 @@ type expr =
   | If of expr * expr * expr
   | Quote of expr
   | Lambda of string list * expr
+  | Closure of (string * expr) list * string list * expr
   | List of expr list
 
 type stmt =

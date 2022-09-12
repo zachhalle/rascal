@@ -217,6 +217,18 @@ let%expect_test _ =
 
 let%expect_test _ =
   let e = parse [
+    "(define-rec length (lambda (l)";
+    "  (if (= l '())";
+    "      0";
+    "      (+ 1 (length (cdr l)))"; 
+    "  )))";
+    "(length '(100 200 300))"
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 3 |}]
+
+let%expect_test _ =
+  let e = parse [
     "(define empty? (lambda (l) (= l '())))";
     "(define incr (lambda (x) (+ x 1)))";
     "(let-rec ((map (lambda (f l)   ";
@@ -255,3 +267,13 @@ let%expect_test _ =
   ] in
   eval_and_print_prog e;
   [%expect {| 999 |}]
+
+let%expect_test _ =
+  let e = parse [
+    "(define x 100)";
+    "(define f (lambda (y) (+ x y)))";
+    "(define x 200)";
+    "(f 0)";
+  ] in
+  eval_and_print_prog e;
+  [%expect {| 100 |}]
