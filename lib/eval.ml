@@ -16,7 +16,7 @@ let bind_all context (vs, es) =
   List.fold_left2 (fun context v e -> bind context v e) context vs es
 
 let unzip xys =
-  let (xs, ys) = List.fold_left (fun (xs, ys) (x, y)-> (x :: xs, y :: ys)) ([], []) xys in
+  let (xs, ys) = List.fold_left (fun (xs, ys) (x, y) -> (x :: xs, y :: ys)) ([], []) xys in
   (List.rev xs, List.rev ys)
 
 let free_variables e =
@@ -62,7 +62,7 @@ let rec eval context e =
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Closure _
   | Primitive _ -> e
-  | Lambda (vs, e') -> Closure (List.map (fun v -> (v, substitute context v)) (free_variables vs), vs, e')
+  | Lambda (vs, e') -> Closure (List.map (fun v -> (v, substitute context v)) (free_variables e), vs, e')
   | Var v -> 
     begin try eval context (substitute context v) with
     | Undefined_variable v -> raise (Runtime_error (sprintf "Undefined variable: %s" v))
