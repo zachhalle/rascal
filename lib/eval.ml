@@ -98,7 +98,7 @@ and apply context es =
   | [] -> assert false
   | e :: es' ->
     match e with
-    | If _ | Var _ | Fix _ | Let _ | Let_rec _ | List _ | Lambda _ -> printf "%s" (pretty_expr e); assert false
+    | If _ | Var _ | Fix _ | Let _ | Let_rec _ | List _ | Lambda _ -> assert false
     | Int _ | Float _ | String _
     | Bool _ | Quote _ ->
       raise (
