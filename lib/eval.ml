@@ -62,9 +62,7 @@ let rec eval context e =
   | Int _ | Float _ | String _
   | Bool _ | Quote _ | Closure _
   | Primitive _ -> e
-  | Lambda (vs, e') -> 
-    let free_variables = free_variables e in
-    Closure (List.map (fun v -> v, substitute context v) free_variables, vs, e')
+  | Lambda (vs, e') -> Closure (List.map (fun v -> (v, substitute context v)) (free_variables vs), vs, e')
   | Var v -> 
     begin try eval context (substitute context v) with
     | Undefined_variable v -> raise (Runtime_error (sprintf "Undefined variable: %s" v))
