@@ -13,3 +13,7 @@ watch: build
 .PHONY: test
 test: build
 	@dune runtest
+
+.PHONY: install
+install: build
+	@sudo cp _build/install/default/bin/rascal /usr/local/bin
