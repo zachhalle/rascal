@@ -18,23 +18,23 @@ let eval_and_print_prog prog =
 (* values *)
 
 let%expect_test _ =
-  eval_and_print_expr (Int 0);
+  eval_and_print_expr (Num (Int 0));
   [%expect {| 0 |}]
 
 let%expect_test _ =
-  eval_and_print_expr (Int 100000);
+  eval_and_print_expr (Num (Int 100000));
   [%expect {| 100000 |}]
 
 let%expect_test _ =
-  eval_and_print_expr (Float 0.);
+  eval_and_print_expr (Num (Float 0.));
   [%expect {| 0. |}]
 
 let%expect_test _ =
-  eval_and_print_expr (Float 0.000);
+  eval_and_print_expr (Num (Float 0.000));
   [%expect {| 0. |}]
   
 let%expect_test _ =
-  eval_and_print_expr (Float 101.101010);
+  eval_and_print_expr (Num (Float 101.101010));
   [%expect {| 101.10101 |}]
 
 let%expect_test _ =
@@ -50,7 +50,7 @@ let%expect_test _ =
   [%expect {| '() |}]
 
 let%expect_test _ =
-  eval_and_print_expr (Quote (List [Int 0; Int 1; Int 2]));
+  eval_and_print_expr (Quote (List [Num (Int 0); Num (Int 1); Num (Int 2)]));
   [%expect {| '(0 1 2) |}]
 
 let%expect_test _ =
@@ -58,7 +58,7 @@ let%expect_test _ =
   [%expect {| (lambda () '()) |}]
 
 let%expect_test _ =
-  eval_and_print_expr (Lambda (["x"], (List [Var "+"; Var "x"; Int 1])));
+  eval_and_print_expr (Lambda (["x"], (List [Var "+"; Var "x"; Num (Int 1)])));
   [%expect {| (lambda (x) (+ x 1)) |}]
 
 (* expressions *)

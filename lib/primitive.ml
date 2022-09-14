@@ -18,9 +18,9 @@ let [@warning "-8"] eq [v; w] =
   let rec binding_structural_eq (v, e) (v', e') = String.equal v v' && structural_eq e e'
   and structural_eq e1 e2 =
     match e1, e2 with
-    | Int x, Int y -> x == y
+    | Num (Int x), Num (Int y) -> x == y
+    | Num (Float x), Num (Float y) -> x == y
     | Bool x, Bool y -> x == y
-    | Float x, Float y -> x == y
     | String x, String y -> String.equal x y
     | Var x, Var y -> String.equal x y
     | Primitive x, Primitive y -> String.equal x y
@@ -37,17 +37,17 @@ let [@warning "-8"] eq [v; w] =
   in
   let value_eq v w =
     match v, w with
-    | Int x, Int y -> x == y
+    | Num (Int x), Num (Int y) -> x == y
+    | Num (Float x), Num (Float y) -> x == y
     | Bool x, Bool y -> x == y
-    | Float x, Float y -> x == y
     | String x, String y -> String.equal x y
     | Quote e1, Quote e2 -> structural_eq e1 e2
     | _ -> false
   in
   let check_arg v =
     match v with
-    | Int _ -> ()
-    | Float _ -> ()
+    | Num (Int _) -> ()
+    | Num (Float _) -> ()
     | String _ -> ()
     | Bool _ -> ()
     | Var _ -> assert false
@@ -64,24 +64,38 @@ let [@warning "-8"] eq [v; w] =
   check_arg w;
   Bool (value_eq v w)
 
+let [@warning "-8"] num f g x y =
+  match x, y with
+  | Num (Int x), Num (Int y) -> Num (Int (f x y))
+  | Num (Int x), Num (Float y) -> Num (Float (g (float_of_int x) y))
+  | Num (Float x), Num (Int y) -> Num (Float (g x (float_of_int y)))
+  | Num (Float x), Num (Float y) -> Num (Float (g x y))
+
+let [@warning "-8"] num_cmp f g x y =
+  match x, y with
+  | Num (Int x), Num (Int y) -> Bool (f x y)
+  | Num (Int x), Num (Float y) -> Bool (g (float_of_int x) y)
+  | Num (Float x), Num (Int y) -> Bool (g x (float_of_int y))
+  | Num (Float x), Num (Float y) -> Bool (g x y)
+
 let [@warning "-8"] primitives : primitives =
   let add_all entries = List.fold_left (fun d (k, v) -> add k v d) empty entries in
   add_all [
-    "+", List.fold_left (fun (Int x) (Int y) -> Int (x + y)) (Int 0);
+    "+", (List.fold_left (num (+) (+.)) (Num (Int 0)));
     "-", (fun xs -> 
             match xs with 
-            | [] -> Int 0 
-            | x :: xs' -> List.fold_left (fun (Int x) (Int y) -> Int (x - y)) x xs');
-    "*", List.fold_left (fun (Int x) (Int y) -> Int (x * y)) (Int 1);
+            | [] -> Num (Int 0)
+            | x :: xs' -> List.fold_left (num (-) (-.)) x xs');
+    "*", (List.fold_left (num ( * ) ( *. )) (Num (Int 0)));
     "/", (fun xs ->
             match xs with
-            | [] -> Int 1
-            | x :: xs' -> List.fold_left (fun (Int x) (Int y) -> (Int (x / y))) x xs');
-    "%", (fun [Int x; Int y] -> Int (x mod y));
-    "<", (fun [Int x; Int y] -> Bool (x < y));
-    ">", (fun [Int x; Int y] -> Bool (x > y));
-    "<=", (fun [Int x; Int y] -> Bool (x <= y));
-    ">=", (fun [Int x; Int y] -> Bool (x >= y));
+            | [] -> Num (Int 1)
+            | x :: xs' -> List.fold_left (num (/) (/.)) x xs');
+    "%", (fun [Num (Int x); Num (Int y)] -> Num (Int (x mod y)));
+    "<", (fun [x; y] -> num_cmp (<) (<) x y);
+    ">", (fun [x; y] -> num_cmp (>) (>) x y);
+    "<=", (fun [x; y] -> num_cmp (<=) (<=) x y);
+    ">=", (fun [x; y] -> num_cmp (>=) (>=) x y);
     "=", eq;
     "&&", List.fold_left (fun (Bool x) (Bool y) -> Bool (x && y)) (Bool true);
     "||", List.fold_left (fun (Bool x) (Bool y) -> Bool (x || y)) (Bool false);

@@ -1,8 +1,9 @@
+type num = Float of float | Int of int
+
 type expr =
-  | Int of int
-  | Float of float
-  | String of string
+  | Num of num
   | Bool of bool
+  | String of string
   | Var of string
   | Primitive of string
   | Fix of string * expr

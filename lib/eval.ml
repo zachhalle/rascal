@@ -7,9 +7,9 @@ exception Runtime_error of string
 
 let is_value e =
   match e with
-  | Int _ | Float _ | String _
-  | Bool _ | Var _ | Quote _
-  | Lambda _ | Primitive _ | Closure _ -> true
+  | Num _ | String _ | Bool _ 
+  | Var _ | Quote _ | Lambda _ 
+  | Primitive _ | Closure _ -> true
   | List _ | If _ | Fix _ | Let _ | Let_rec _ -> false
 
 let bind_all context (vs, es) =
@@ -23,8 +23,8 @@ let free_variables e =
   let open Set.Make(String) in
   let rec loop bound free e =
     match e with
-    | Int _ | Float _ | String _
-    | Bool _ | Primitive _ | Quote _ -> free
+    | Num _ | String _ | Bool _ 
+    | Primitive _ | Quote _ -> free
     | Closure _ -> (* should never introduce any free vars *) free
     | If (e1, e2, e3) ->
       let free' = loop bound free e1 in
@@ -59,9 +59,8 @@ let free_variables e =
 
 let rec eval context e =
   match e with
-  | Int _ | Float _ | String _
-  | Bool _ | Quote _ | Closure _
-  | Primitive _ -> e
+  | Num _ | String _ | Bool _
+  | Quote _ | Closure _ | Primitive _ -> e
   | Lambda (vs, e') -> Closure (List.map (fun v -> (v, substitute context v)) (free_variables e), vs, e')
   | Var v -> 
     begin try eval context (substitute context v) with
@@ -97,8 +96,7 @@ and apply context es =
   | e :: es' ->
     match e with
     | If _ | Var _ | Fix _ | Let _ | Let_rec _ | List _ | Lambda _ -> assert false
-    | Int _ | Float _ | String _
-    | Bool _ | Quote _ ->
+    | Num _ | String _ | Bool _ | Quote _ ->
       raise (
         Runtime_error (
           sprintf "Illegal application: head isn't a procedure: %s" (pretty_expr e)))

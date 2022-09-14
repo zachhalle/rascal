@@ -18,7 +18,7 @@ let%expect_test _ =
   [%expect {| Undefined_variable: x |}]
 
 let%expect_test _ =
-  let context = bind empty_context "x" (Int 0) in
+  let context = bind empty_context "x" (Num (Int 0)) in
   printf "%s" (pretty_expr (substitute context "x"));
   [%expect {| 0 |}]
 
@@ -33,14 +33,14 @@ let%expect_test _ =
   [%expect {| '+ |}]
 
 let%expect_test _ =
-  let context = bind empty_context "x" (Int 1) in
+  let context = bind empty_context "x" (Num (Int 1)) in
   let context = bind context "y" (Var "x") in
   printf "%s" (pretty_expr (substitute context "y"));
   [%expect {| 1 |}]
 
 let%expect_test _ =
-  let context0 = bind empty_context "x" (Int 0) in
-  let context1 = bind context0 "y" (Int 1) in
+  let context0 = bind empty_context "x" (Num (Int 0)) in
+  let context1 = bind context0 "y" (Num (Int 1)) in
   let context2 = bind context1 "x" (Var "y") in
   printf "context0 = { %s = %s }\n" "x" (pretty_expr (substitute context0 "x"));
   printf "context1 = { %s = %s }\n" "x" (pretty_expr (substitute context1 "x"));

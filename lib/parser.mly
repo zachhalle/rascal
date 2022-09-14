@@ -42,8 +42,8 @@ stmt:
   | e = expr         { Expr e }
 
 expr:
-  | i = INT           { Int i } 
-  | f = FLOAT         { Float f }
+  | i = INT           { Num (Int i) } 
+  | f = FLOAT         { Num (Float f) }
   | x = IDENTIFIER    { Var x }
   | s = STRING        { String s }
   | QUOTE ; e = expr  { Quote e }

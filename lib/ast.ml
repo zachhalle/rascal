@@ -1,8 +1,9 @@
+type num = Float of float | Int of int
+
 type expr =
-  | Int of int
-  | Float of float
-  | String of string
+  | Num of num
   | Bool of bool
+  | String of string
   | Var of string
   | Primitive of string
   | Fix of string * expr
@@ -22,8 +23,8 @@ type stmt =
 let rec pprint_expr e =
   let open PPrint in
   match e with
-  | Int i -> string (string_of_int i)
-  | Float f -> string (string_of_float f)
+  | Num (Int i) -> string (string_of_int i)
+  | Num (Float f) -> string (string_of_float f)
   | String s -> enclose (char '\"') (char '\"') (string s)
   | Bool b -> string (string_of_bool b)
   | Var v -> string v
