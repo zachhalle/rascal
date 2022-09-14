@@ -46,6 +46,18 @@ let%expect_test _ =
   [%expect {| false |}]
 
 let%expect_test _ =
+  eval_and_print_expr (Char 'c');
+  [%expect {| #\c |}]
+
+let%expect_test _ =
+  eval_and_print_expr (Char ' ');
+  [%expect {| #\space |}]
+
+let%expect_test _ =
+  eval_and_print_expr (Char '\n');
+  [%expect {| #\newline |}]
+
+let%expect_test _ =
   eval_and_print_expr (Quote (List []));
   [%expect {| '() |}]
 
@@ -62,6 +74,21 @@ let%expect_test _ =
   [%expect {| (lambda (x) (+ x 1)) |}]
 
 (* expressions *)
+
+let%expect_test _ =
+  let e = parse ["#\\c"] in
+  eval_and_print_prog e;
+  [%expect {| #\c |}]
+
+let%expect_test _ =
+  let e = parse ["#\\ "] in
+  eval_and_print_prog e;
+  [%expect {| #\space |}]
+
+let%expect_test _ =
+  let e = parse ["#\\\n"] in
+  eval_and_print_prog e;
+  [%expect {| #\newline |}]
 
 let%expect_test _ =
   let e = parse ["(+)"] in

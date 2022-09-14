@@ -20,6 +20,14 @@ let%expect_test _ =
   [%expect {| () |}]
 
 let%expect_test _ =
+  parse_and_print ["#\\c"];
+  [%expect {| #\c |}]
+
+let%expect_test _ =
+  parse_and_print ["#\\ "];
+  [%expect {| #\space |}]
+
+let%expect_test _ =
   parse_and_print ["(+)"];
   [%expect {| (+) |}]
 

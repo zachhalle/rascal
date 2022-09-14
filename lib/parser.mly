@@ -4,6 +4,7 @@ open Ast
 
 %token <int> INT
 %token <float> FLOAT
+%token <char> CHAR
 %token <string> IDENTIFIER
 %token <string> STRING
 %token LET
@@ -44,6 +45,7 @@ stmt:
 expr:
   | i = INT           { Num (Int i) } 
   | f = FLOAT         { Num (Float f) }
+  | c = CHAR          { Char c }
   | x = IDENTIFIER    { Var x }
   | s = STRING        { String s }
   | QUOTE ; e = expr  { Quote e }

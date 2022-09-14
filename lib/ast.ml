@@ -3,6 +3,7 @@ type num = Float of float | Int of int
 type expr =
   | Num of num
   | Bool of bool
+  | Char of char
   | String of string
   | Var of string
   | Primitive of string
@@ -25,6 +26,9 @@ let rec pprint_expr e =
   match e with
   | Num (Int i) -> string (string_of_int i)
   | Num (Float f) -> string (string_of_float f)
+  | Char ' ' -> string "#\\space"
+  | Char '\n' -> string "#\\newline"
+  | Char c -> string "#\\" ^^ string (String.make 1 c)
   | String s -> enclose (char '\"') (char '\"') (string s)
   | Bool b -> string (string_of_bool b)
   | Var v -> string v

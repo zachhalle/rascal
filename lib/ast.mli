@@ -3,6 +3,7 @@ type num = Float of float | Int of int
 type expr =
   | Num of num
   | Bool of bool
+  | Char of char
   | String of string
   | Var of string
   | Primitive of string

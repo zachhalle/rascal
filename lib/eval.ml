@@ -7,7 +7,7 @@ exception Runtime_error of string
 
 let is_value e =
   match e with
-  | Num _ | String _ | Bool _ 
+  | Num _ | String _ | Bool _ | Char _
   | Var _ | Quote _ | Lambda _ 
   | Primitive _ | Closure _ -> true
   | List _ | If _ | Fix _ | Let _ | Let_rec _ -> false
@@ -24,7 +24,7 @@ let free_variables e =
   let rec loop bound free e =
     match e with
     | Num _ | String _ | Bool _ 
-    | Primitive _ | Quote _ -> free
+    | Primitive _ | Quote _ | Char _ -> free
     | Closure _ -> (* should never introduce any free vars *) free
     | If (e1, e2, e3) ->
       let free' = loop bound free e1 in
@@ -59,7 +59,7 @@ let free_variables e =
 
 let rec eval context e =
   match e with
-  | Num _ | String _ | Bool _
+  | Num _ | String _ | Bool _ | Char _
   | Quote _ | Closure _ | Primitive _ -> e
   | Lambda (vs, e') -> Closure (List.map (fun v -> (v, substitute context v)) (free_variables e), vs, e')
   | Var v -> 
@@ -96,7 +96,7 @@ and apply context es =
   | e :: es' ->
     match e with
     | If _ | Var _ | Fix _ | Let _ | Let_rec _ | List _ | Lambda _ -> assert false
-    | Num _ | String _ | Bool _ | Quote _ ->
+    | Num _ | String _ | Bool _ | Quote _ | Char _ ->
       raise (
         Runtime_error (
           sprintf "Illegal application: head isn't a procedure: %s" (pretty_expr e)))

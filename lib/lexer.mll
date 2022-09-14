@@ -38,6 +38,7 @@ rule token =
   | "lambda"     { LAMBDA }
   | identifier   { IDENTIFIER (lexeme lexbuf) }
   | '"'          { read_string (Buffer.create 10) lexbuf }
+  | '#' '\\'     { read_char lexbuf }
   | '('          { LPAREN }
   | ')'          { RPAREN }
   | _            { raise (SyntaxError ("Unexpected character: " ^ lexeme lexbuf)) }
@@ -56,3 +57,9 @@ and read_string buffer =
   | [^ '"' '\\']+ { add_string buffer (lexeme lexbuf) ; read_string buffer lexbuf }
   | _             { raise (SyntaxError ("Illegal character in string: " ^ lexeme lexbuf)) }
   | eof           { raise (SyntaxError ("Unexpected end of file while lexing string"))}
+
+and read_char =
+  parse
+  | "space"     { CHAR (' ') }
+  | "newline"   { CHAR ('\n') }
+  | _           { CHAR (lexeme_char lexbuf 0) }
