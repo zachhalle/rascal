@@ -86,7 +86,7 @@ let [@warning "-8"] primitives : primitives =
             match xs with 
             | [] -> Num (Int 0)
             | x :: xs' -> List.fold_left (num (-) (-.)) x xs');
-    "*", (List.fold_left (num ( * ) ( *. )) (Num (Int 0)));
+    "*", (List.fold_left (num ( * ) ( *. )) (Num (Int 1)));
     "/", (fun xs ->
             match xs with
             | [] -> Num (Int 1)
