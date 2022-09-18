@@ -68,7 +68,12 @@ let rec eval context e =
     end
   | Fix (v, e) -> eval (bind context v (Fix (v, e))) e
   | Let (bindings, e) ->
-    let context' = List.fold_left (fun context (v, e) -> bind context v (eval context e)) context bindings in
+    let context' =
+      List.fold_left
+        (fun context (v, e) -> bind context v (eval context e))
+        context
+        bindings
+    in
     eval context' e
   | Let_rec (bindings, e) ->
     let context' =
