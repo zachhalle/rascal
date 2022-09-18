@@ -115,7 +115,8 @@ and apply context es =
       if nvs != nes then
         raise (
           Runtime_error (
-            sprintf "Illegal application: arity mismatch: found %d arguments but expected %d" nes nvs))
+            sprintf "Illegal application: arity mismatch: found %d arguments but expected %d in application %s"
+            nes nvs (pretty_expr (List es))))
       else
         eval (bind_all (bind_all context (vs, es')) (unzip bindings)) e'
                 
