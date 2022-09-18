@@ -64,38 +64,37 @@ let [@warning "-8"] eq [v; w] =
   check_arg w;
   Bool (value_eq v w)
 
-let [@warning "-8"] num f g x y =
-  match x, y with
-  | Num (Int x), Num (Int y) -> Num (Int (f x y))
-  | Num (Int x), Num (Float y) -> Num (Float (g (float_of_int x) y))
-  | Num (Float x), Num (Int y) -> Num (Float (g x (float_of_int y)))
-  | Num (Float x), Num (Float y) -> Num (Float (g x y))
+let to_bool x = Bool x
 
-let [@warning "-8"] num_cmp f g x y =
+let to_int x = Num (Int x)
+
+let to_float x = Num (Float x)
+
+let [@warning "-8"] num f g finish_int finish_float x y =
   match x, y with
-  | Num (Int x), Num (Int y) -> Bool (f x y)
-  | Num (Int x), Num (Float y) -> Bool (g (float_of_int x) y)
-  | Num (Float x), Num (Int y) -> Bool (g x (float_of_int y))
-  | Num (Float x), Num (Float y) -> Bool (g x y)
+  | Num (Int x), Num (Int y) -> finish_int (f x y)
+  | Num (Int x), Num (Float y) -> finish_float (g (float_of_int x) y)
+  | Num (Float x), Num (Int y) -> finish_float (g x (float_of_int y))
+  | Num (Float x), Num (Float y) -> finish_float (g x y)
 
 let [@warning "-8"] primitives : primitives =
   let add_all entries = List.fold_left (fun d (k, v) -> add k v d) empty entries in
   add_all [
-    "+", (List.fold_left (num (+) (+.)) (Num (Int 0)));
+    "+", (List.fold_left (num (+) (+.) to_int to_float) (Num (Int 0)));
     "-", (fun xs -> 
             match xs with 
             | [] -> Num (Int 0)
-            | x :: xs' -> List.fold_left (num (-) (-.)) x xs');
-    "*", (List.fold_left (num ( * ) ( *. )) (Num (Int 1)));
+            | x :: xs' -> List.fold_left (num (-) (-.) to_int to_float) x xs');
+    "*", (List.fold_left (num ( * ) ( *. ) to_int to_float) (Num (Int 1)));
     "/", (fun xs ->
             match xs with
             | [] -> Num (Int 1)
-            | x :: xs' -> List.fold_left (num (/) (/.)) x xs');
+            | x :: xs' -> List.fold_left (num (/) (/.) to_int to_float) x xs');
     "%", (fun [Num (Int x); Num (Int y)] -> Num (Int (x mod y)));
-    "<", (fun [x; y] -> num_cmp (<) (<) x y);
-    ">", (fun [x; y] -> num_cmp (>) (>) x y);
-    "<=", (fun [x; y] -> num_cmp (<=) (<=) x y);
-    ">=", (fun [x; y] -> num_cmp (>=) (>=) x y);
+    "<", (fun [x; y] -> num (<) (<) to_bool to_bool x y);
+    ">", (fun [x; y] -> num (>) (>) to_bool to_bool x y);
+    "<=", (fun [x; y] -> num (<=) (<=) to_bool to_bool x y);
+    ">=", (fun [x; y] -> num (>=) (>=) to_bool to_bool x y);
     "=", eq;
     "&&", List.fold_left (fun (Bool x) (Bool y) -> Bool (x && y)) (Bool true);
     "||", List.fold_left (fun (Bool x) (Bool y) -> Bool (x || y)) (Bool false);
