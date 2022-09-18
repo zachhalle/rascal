@@ -105,9 +105,7 @@ let [@warning "-8"] primitives : primitives =
   ]
 
 let primitive_bindings =
-  let bindings = ref [] in
-  iter (fun prim _ -> bindings := (prim, Primitive prim) :: !bindings) primitives;
-  !bindings
+  fold (fun primitive _ bindings -> (primitive, Primitive primitive) :: bindings) primitives []
 
 let apply_primitive v es =
   match find_opt v primitives with
