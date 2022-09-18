@@ -65,9 +65,7 @@ let [@warning "-8"] eq [v; w] =
   Bool (value_eq v w)
 
 let to_bool x = Bool x
-
 let to_int x = Num (Int x)
-
 let to_float x = Num (Float x)
 
 let [@warning "-8"] num f g finish_int finish_float x y =
