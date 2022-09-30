@@ -75,6 +75,12 @@ let [@warning "-8"] num f g finish_int finish_float x y =
   | Num (Float x), Num (Int y) -> finish_float (g x (float_of_int y))
   | Num (Float x), Num (Float y) -> finish_float (g x y)
 
+let [@warning "-8"] (/) x y = match y with y when y != 0 -> x / y
+
+let [@warning "-8"] (/.) x y = match y with y when y != 0. -> x /. y
+
+let [@warning "-8"] (%) x y = match y with y when y != 0 -> x mod y
+
 let [@warning "-8"] primitives : primitives =
   let add_all entries = List.fold_left (fun d (k, v) -> add k v d) empty entries in
   add_all [
@@ -88,7 +94,7 @@ let [@warning "-8"] primitives : primitives =
             match xs with
             | [] -> Num (Int 1)
             | x :: xs' -> List.fold_left (num (/) (/.) to_int to_float) x xs');
-    "%", (fun [Num (Int x); Num (Int y)] -> Num (Int (x mod y)));
+    "%", (fun [Num (Int x); Num (Int y)] -> Num (Int (x % y)));
     "<", (fun [x; y] -> num (<) (<) to_bool to_bool x y);
     ">", (fun [x; y] -> num (>) (>) to_bool to_bool x y);
     "<=", (fun [x; y] -> num (<=) (<=) to_bool to_bool x y);
@@ -114,4 +120,6 @@ let apply_primitive v es =
     | Match_failure _ ->
       raise (
         Runtime_error (
-          sprintf "Illegal application: illegal arguments to primitive procedure %s" (pretty_expr (List es))))
+          sprintf
+            "Illegal application: illegal arguments to primitive procedure %s"
+            (pretty_expr (List (Var v :: es)))))
